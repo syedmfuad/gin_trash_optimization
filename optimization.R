@@ -6,11 +6,16 @@ data <- read.csv("gin.csv")
 #which is an interpreted language. One consequence is that lpsolve is much faster
 #http://www.noamross.net/archives/2014-04-16-vectorization-in-r-why/
 
-n=nrow(data)
-U <- data$gin_medium
+#things to change: (i) constraints in every month consistent to hours of operation; (ii) capacity of ammonia plant 
 
-c=4
+#sensitivity analysis: (i) change eff=2/3; (ii) reduce lower base to 25; (iii) reduce ammonia marginal cost to 85
+
+n=nrow(data)
+U <- data$gin_small
+
+c=1
 m=0
+eff=1
 
 XC=matrix(NA, nrow=n, ncol=55)
 
@@ -29,11 +34,11 @@ system.time(
     #for december
     
     f.obj <- c((data$dec_peak[i]-5.5), (data$dec_ubase[i]-5.5), (data$dec_lbase[i]-5.5), ((data$winter_crop[i]/11-17.35))) #13.68 #18.51
-    f.rhs <- c(305*c, U[i], 60*c, 139*c, 106*c, 306*m) #612*m
+    f.rhs <- c(305*c*eff, U[i]*eff, 60*c*eff, 139*c*eff, 106*c*eff, 306*m*eff) #612*m
     
     results_dec <- lp("max", f.obj, f.con, f.dir, f.rhs)
     
-    total <- as.numeric(results_dec$solution[1]+results_dec$solution[2]+results_dec$solution[3]+results_dec$solution[4])
+    total <- as.numeric(results_dec$solution[1]+results_dec$solution[2]+results_dec$solution[3]+results_dec$solution[4])*1/eff
     
     XC[i,1] <- results_dec$solution[1]
     XC[i,12] <- results_dec$solution[2]
@@ -45,11 +50,11 @@ system.time(
     #for january
     
     f.obj <- c((data$jan_peak[i]-5.5), (data$jan_ubase[i]-5.5), (data$jan_lbase[i]-5.5), ((data$winter_crop[i]/11-17.35))) #13.68 #18.51
-    f.rhs <- c(610*c, gin, 120*c, 278*c, 212*c, 612*m) #612*m
+    f.rhs <- c(610*c*eff, gin*eff, 120*c*eff, 278*c*eff, 212*c*eff, 612*m*eff) #612*m
     
     results_jan <- lp("max", f.obj, f.con, f.dir, f.rhs)
     
-    total <- as.numeric(results_jan$solution[1]+results_jan$solution[2]+results_jan$solution[3]+results_jan$solution[4])
+    total <- as.numeric(results_jan$solution[1]+results_jan$solution[2]+results_jan$solution[3]+results_jan$solution[4])*1/eff
     
     XC[i,2] <- results_jan$solution[1]
     XC[i,13] <- results_jan$solution[2]
@@ -61,11 +66,11 @@ system.time(
     #for february
     
     f.obj <- c((data$feb_peak[i]-5.5), (data$feb_ubase[i]-5.5), (data$feb_lbase[i]-5.5), ((data$winter_crop[i]/11-17.35))) #13.68 #18.51
-    f.rhs <- c(610*c, gin, 120*c, 278*c, 212*c, 612*m) #612*m
+    f.rhs <- c(610*c*eff, gin*eff, 120*c*eff, 278*c*eff, 212*c*eff, 612*m*eff) #612*m
     
     results_feb <- lp("max", f.obj, f.con, f.dir, f.rhs)
     
-    total <- as.numeric(results_feb$solution[1]+results_feb$solution[2]+results_feb$solution[3]+results_feb$solution[4])
+    total <- as.numeric(results_feb$solution[1]+results_feb$solution[2]+results_feb$solution[3]+results_feb$solution[4])*1/eff
     
     XC[i,3] <- results_feb$solution[1]
     XC[i,14] <- results_feb$solution[2]
@@ -77,11 +82,11 @@ system.time(
     #for march first half
     
     f.obj <- c((data$mar_peak[i]-5.5), (data$mar_ubase[i]-5.5), (data$mar_lbase[i]-5.5), ((data$summer_crop[i]/11-17.35))) #13.68 #18.51
-    f.rhs <- c(305*c, gin, 60*c, 139*c, 106*c, 306*m) #612*m
+    f.rhs <- c(305*c*eff, gin*eff, 60*c*eff, 139*c*eff, 106*c*eff, 306*m*eff) #612*m
     
     results_mar1 <- lp("max", f.obj, f.con, f.dir, f.rhs)
     
-    total <- as.numeric(results_mar1$solution[1]+results_mar1$solution[2]+results_mar1$solution[3]+results_mar1$solution[4])
+    total <- as.numeric(results_mar1$solution[1]+results_mar1$solution[2]+results_mar1$solution[3]+results_mar1$solution[4])*1/eff
     
     XC[i,4] <- results_mar1$solution[1]
     XC[i,15] <- results_mar1$solution[2]
@@ -93,11 +98,11 @@ system.time(
     #for march second half
     
     f.obj <- c((data$mar_ubase[i]-5.5), (data$mar_lbase[i]-5.5), ((data$summer_crop[i]/11-17.35))) #13.68 #18.51
-    f.rhs <- c(305*c, gin, 139*c, 106*c, 306*m) #612*m
+    f.rhs <- c(305*c*eff, gin*eff, 139*c*eff, 106*c*eff, 306*m*eff) #612*m
     
     results_mar2 <- lp("max", f.obj, f.con_sum, f.dir_sum, f.rhs)
     
-    total <- as.numeric(results_mar2$solution[1]+results_mar2$solution[2]+results_mar2$solution[3])
+    total <- as.numeric(results_mar2$solution[1]+results_mar2$solution[2]+results_mar2$solution[3])*1/eff
     
     XC[i,5] <- 0
     XC[i,16] <- results_mar2$solution[1]
@@ -109,11 +114,11 @@ system.time(
     #for april
     
     f.obj <- c((data$apr_ubase[i]-5.5), (data$apr_lbase[i]-5.5), ((data$summer_crop[i]/11-17.35))) #13.68 #18.51
-    f.rhs <- c(610*c, gin, 278*c, 212*c, 612*m) #612*m
+    f.rhs <- c(610*c*eff, gin*eff, 278*c*eff, 212*c*eff, 612*m*eff) #612*m
     
     results_apr <- lp("max", f.obj, f.con_sum, f.dir_sum, f.rhs)
     
-    total <- as.numeric(results_apr$solution[1]+results_apr$solution[2]+results_apr$solution[3])
+    total <- as.numeric(results_apr$solution[1]+results_apr$solution[2]+results_apr$solution[3])*1/eff
     
     XC[i,6] <- 0
     XC[i,17] <- results_apr$solution[1]
@@ -125,11 +130,11 @@ system.time(
     #for may
     
     f.obj <- c((data$may_ubase[i]-5.5), (data$may_lbase[i]-5.5), ((data$summer_crop[i]/11-17.35))) #13.68 #18.51
-    f.rhs <- c(610*c, gin, 278*c, 212*c, 612*m) #612*m
+    f.rhs <- c(610*c*eff, gin*eff, 278*c*eff, 212*c*eff, 612*m*eff) #612*m
     
     results_may <- lp("max", f.obj, f.con_sum, f.dir_sum, f.rhs)
     
-    total <- as.numeric(results_may$solution[1]+results_may$solution[2]+results_may$solution[3])
+    total <- as.numeric(results_may$solution[1]+results_may$solution[2]+results_may$solution[3])*1/eff
     
     XC[i,7] <- 0
     XC[i,18] <- results_may$solution[1]
@@ -141,11 +146,11 @@ system.time(
     #for june
     
     f.obj <- c((data$jun_peak[i]-5.5), (data$jun_ubase[i]-5.5), (data$jun_lbase[i]-5.5), ((data$roy_crop[i]/11-17.35))) #13.68 #18.51
-    f.rhs <- c(610*c, gin, 120*c, 278*c, 212*c, 612*m) #612*m
+    f.rhs <- c(610*c*eff, gin*eff, 120*c*eff, 278*c*eff, 212*c*eff, 612*m*eff) #612*m
     
     results_jun <- lp("max", f.obj, f.con, f.dir, f.rhs)
     
-    total <- as.numeric(results_jun$solution[1]+results_jun$solution[2]+results_jun$solution[3]+results_jun$solution[4])
+    total <- as.numeric(results_jun$solution[1]+results_jun$solution[2]+results_jun$solution[3]+results_jun$solution[4])*1/eff
     
     XC[i,8] <- results_jun$solution[1]
     XC[i,19] <- results_jun$solution[2]
@@ -157,11 +162,11 @@ system.time(
     #for july
     
     f.obj <- c((data$jul_peak[i]-5.5), (data$jul_ubase[i]-5.5), (data$jul_lbase[i]-5.5), ((data$roy_crop[i]/11-17.35))) #13.68 #18.51
-    f.rhs <- c(610*c, gin, 120*c, 278*c, 212*c, 612*m) #612*m
+    f.rhs <- c(610*c*eff, gin*eff, 120*c*eff, 278*c*eff, 212*c*eff, 612*m*eff) #612*m
     
     results_jul <- lp("max", f.obj, f.con, f.dir, f.rhs)
     
-    total <- as.numeric(results_jul$solution[1]+results_jul$solution[2]+results_jul$solution[3]+results_jul$solution[4])
+    total <- as.numeric(results_jul$solution[1]+results_jul$solution[2]+results_jul$solution[3]+results_jul$solution[4])*1/eff
     
     XC[i,9] <- results_jul$solution[1]
     XC[i,20] <- results_jul$solution[2]
@@ -173,11 +178,11 @@ system.time(
     #for august
     
     f.obj <- c((data$aug_peak[i]-5.5), (data$aug_ubase[i]-5.5), (data$aug_lbase[i]-5.5), ((data$roy_crop[i]/11-17.35))) #13.68 #18.51
-    f.rhs <- c(610*c, gin, 120*c, 278*c, 212*c, 612*m) #612*m
+    f.rhs <- c(610*c*eff, gin*eff, 120*c*eff, 278*c*eff, 212*c*eff, 612*m*eff) #612*m
     
     results_aug <- lp("max", f.obj, f.con, f.dir, f.rhs)
     
-    total <- as.numeric(results_aug$solution[1]+results_aug$solution[2]+results_aug$solution[3]+results_aug$solution[4])
+    total <- as.numeric(results_aug$solution[1]+results_aug$solution[2]+results_aug$solution[3]+results_aug$solution[4])*1/eff
     
     XC[i,10] <- results_aug$solution[1]
     XC[i,21] <- results_aug$solution[2]
@@ -189,11 +194,11 @@ system.time(
     #for september
     
     f.obj <- c((data$sep_peak[i]-5.5), (data$sep_ubase[i]-5.5), (data$sep_lbase[i]-5.5), ((data$roy_crop[i]/11-17.35))) #13.68 #18.51
-    f.rhs <- c(305*c, gin, 60*c, 139*c, 106*c, 306*m) #612*m
+    f.rhs <- c(305*c*eff, gin*eff, 60*c*eff, 139*c*eff, 106*c*eff, 306*m*eff) #612*m
     
     results_sep <- lp("max", f.obj, f.con, f.dir, f.rhs)
     
-    total <- as.numeric(results_sep$solution[1]+results_sep$solution[2]+results_sep$solution[3]+results_sep$solution[4])
+    total <- as.numeric(results_sep$solution[1]+results_sep$solution[2]+results_sep$solution[3]+results_sep$solution[4])*1/eff
     
     XC[i,11] <- results_sep$solution[1]
     XC[i,22] <- results_sep$solution[2]
@@ -298,19 +303,58 @@ agg_table <- data.frame(Model=paste0("C=", c, ", M=", m), Ave_Profit=mean(XC_gro
 agg_table
 
 
+
+data$profit <- data$gin_medium*10
+data %>% filter(between(profit, quantile(profit, 0.00), quantile(profit, 0.95))) -> data_new
+
+year <- rep(1:833, each=12)
+year <- append(year, c(2,6,9,12))
+set.seed(12345)
+year <- sample(year)
+
+data$year <- year
+
+data_group = data %>% group_by(year) %>%
+  summarise(profit = sum(profit)*0.3757,
+            n = n())
+
+agg_table <- data.frame(Ave_Profit=mean(data_group$profit), SD_Profit=sd(data_group$profit))
+agg_table
+
+
 #plot
 
 library(readxl)
 data_plot <- read_excel("Summary.xlsx")
-data_plot <- data_plot[c(1:16),]
+data_plot <- data_plot[c(1:16),] #1:16
+data_plot <- data_plot[c(17:44),] #1:16
 
 plot_sub <- subset(data_plot, Group=="C=0, M=0" | Group=="C=1, M=0" | Group=="C=2, M=0")
+plot_sub <- subset(data_plot, Group=="C=0, M=0" | Group=="C=1, M=0" | Group=="C=2, M=0" | Group=="C=2, M=1" | Group=="C=3, M=0" | Group=="C=3, M=1" |
+                     Group=="C=4, M=1" | Group=="C=5, M=1" | Group=="C=5, M=0" | Group=="C=6, M=0")
 
 ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=Group)) +
   geom_point() + geom_text(hjust=0, vjust=0) + coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50000, max(data_plot$Avg_profit)+50000), 
                                                                xlim = c(min(data_plot$SD)-50000, max(data_plot$SD)+50000)) + 
   geom_line(data = plot_sub) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") + 
   theme(axis.text=element_text(size=16), axis.title=element_text(size=16))
+
+
+data_plot <- read_excel("Summary.xlsx")
+data_plot <- data_plot[c(1:16, 45, 46, 47),] #1:16
+
+plot_sub <- subset(data_plot, Group=="C=0, M=0" | Group=="C=1, M=0" & Group2 =="Small gin" | Group=="C=2, M=0" & Group2 == "Small gin")
+plot_sub2 <- subset(data_plot, Group=="C=0, M=0" | Group=="C=1, M=0" & Group2 == "SG_Low" | Group=="C=2, M=0" & Group2 == "SG_Low")
+
+
+ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=Group)) +
+  geom_point() + geom_text(hjust=0, vjust=0) + coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50000, max(data_plot$Avg_profit)+50000), 
+                                                               xlim = c(min(data_plot$SD)-50000, max(data_plot$SD)+50000)) + 
+  geom_line(data = plot_sub) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") + 
+  geom_line(data = plot_sub2, linetype = "dotted") + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
+  theme(axis.text=element_text(size=16), axis.title=element_text(size=16))
+
+
 
 
 
@@ -360,6 +404,13 @@ ggplot(data = plot, aes(x = SD, y = Avgprofit, label=Group)) +
   geom_line(data = plot_sub1, linetype = "dashed") + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
   geom_line(data = plot_sub2, linetype = "dotted") + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") + 
   theme(axis.text=element_text(size=16), axis.title=element_text(size=16))
+
+
+
+
+
+
+
 
 
 
