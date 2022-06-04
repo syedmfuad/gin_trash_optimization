@@ -26,10 +26,10 @@ rm(data10, data13, data16, data19, anc_data)
 
 #winter
 
-data_dec <- filter(data, Month==12 & Day >= 15 & Day <= 31 & Hour >= 6 & Hour <= 20)
+data_dec <- filter(data, Month==12 & Day >= 15 & Day <= 31 & Hour >= 6 & Hour <= 20) #5am to 8pm
 summary(data_dec)
 
-data_janmay <- filter(data, Month>=1 & Month <= 5 & Hour >= 6 & Hour <= 20)
+data_janmay <- filter(data, Month>=1 & Month <= 5 & Hour >= 6 & Hour <= 20) #5am to 8pm
 summary(data_janmay)
 
 data_winter <- rbind(data_dec, data_janmay)
@@ -40,14 +40,14 @@ data_winter %>% group_by(Hour)  %>%
 
 #winter peak
 
-data_dec <- filter(data_dec, Month==12 & Day >= 15 & Day <= 31 & Hour >= 6 & Hour <= 9)
+data_dec <- filter(data_dec, Month==12 & Day >= 15 & Day <= 31 & Hour >= 6 & Hour <= 9) #5am to 9am
 summary(data_dec)
 
 data_janfeb <- filter(data_janmay, Month>=1 & Month <= 2 & Hour >= 6 & Hour <= 9 | Month>=1 & Month <= 2 & 
-                        Hour >= 18 & Hour <= 20)
+                        Hour >= 18 & Hour <= 20) #5am to 9am and 5pm to 8pm
 summary(data_janfeb)
 
-data_mar <- filter(data_janmay, Month==3 & Day >= 1 & Day <= 15 & Hour >= 6 & Hour <= 9)
+data_mar <- filter(data_janmay, Month==3 & Day >= 1 & Day <= 15 & Hour >= 6 & Hour <= 9) #5am to 9am
 summary(data_mar)
 
 data_winter_peak <- rbind(data_dec, data_janfeb, data_mar)
@@ -58,17 +58,17 @@ data_winter_peak %>% group_by(Hour)  %>%
 
 #winter upper base
 
-data_winter_ubase <- data_winter %>% filter(!ID %in% data_winter_peak$ID)
+data_winter_ubase <- data_winter %>% filter(!ID %in% data_winter_peak$ID) #9am to 8pm
 
 data_winter_ubase %>% group_by(Hour)  %>%
   summarise(price_tot = mean(Settlement_Point_Price, na.rm=TRUE))
 
 #winter lower base
 
-data_dec <- filter(data, Month==12 & Day >= 15 & Day <= 31 & Hour >= 21 & Hour <= 24 | Month==12 & Day >= 15 & Day <= 31 & Hour == 5)
+data_dec <- filter(data, Month==12 & Day >= 15 & Day <= 31 & Hour >= 21 & Hour <= 24 | Month==12 & Day >= 15 & Day <= 31 & Hour == 5) #8pm to 12am and 4am
 summary(data_dec)
 
-data_janmay <- filter(data, Month>=1 & Month <= 5 & Hour >= 21 & Hour <= 24 | Month>=1 & Month <= 5 & Hour == 5)
+data_janmay <- filter(data, Month>=1 & Month <= 5 & Hour >= 21 & Hour <= 24 | Month>=1 & Month <= 5 & Hour == 5) #8pm to 12am and 4am
 summary(data_janmay)
 
 data_winter_lbase <- rbind(data_dec, data_janmay)
@@ -79,10 +79,10 @@ data_winter_lbase %>% group_by(Hour)  %>%
 
 #summer
 
-data_junaug <- filter(data, Month>=6 & Month<=8 & Hour >= 9 & Hour <= 18)
+data_junaug <- filter(data, Month>=6 & Month<=8 & Hour >= 9 & Hour <= 18) #8am to 6pm
 summary(data_junaug)
 
-data_sep <- filter(data, Month==9 & Day <= 15 & Hour >= 9 & Hour <= 18)
+data_sep <- filter(data, Month==9 & Day <= 15 & Hour >= 9 & Hour <= 18) #8am to 6pm
 summary(data_sep)
 
 data_summer <- rbind(data_junaug, data_sep)
@@ -93,10 +93,10 @@ data_summer %>% group_by(Hour)  %>%
 
 #summer peak
 
-data_junaug <- filter(data_junaug, Month>=6 & Month<=8 & Hour >= 14 & Hour <= 18)
+data_junaug <- filter(data_junaug, Month>=6 & Month<=8 & Hour >= 14 & Hour <= 18) #1pm to 6pm
 summary(data_junaug)
 
-data_sep <- filter(data_sep, Month==9 & Day <= 15 & Hour >= 14 & Hour <= 18)
+data_sep <- filter(data_sep, Month==9 & Day <= 15 & Hour >= 14 & Hour <= 18) #1pm to 6pm
 summary(data_sep)
 
 data_summer_peak <- rbind(data_junaug, data_sep)
@@ -107,17 +107,17 @@ data_summer_peak %>% group_by(Hour)  %>%
 
 #summer upper base
 
-data_summer_ubase <- data_summer %>% filter(!ID %in% data_summer_peak$ID)
+data_summer_ubase <- data_summer %>% filter(!ID %in% data_summer_peak$ID) #8am to 1pm
 
 data_summer_ubase %>% group_by(Hour)  %>%
   summarise(price_tot = mean(Settlement_Point_Price, na.rm=TRUE))
 
 #summer lower base
 
-data_junaug <- filter(data, Month>=6 & Month<=8 & Hour >= 19 & Hour <= 24 | Month>=6 & Month<=8 & Hour >= 5 & Hour <= 8)
+data_junaug <- filter(data, Month>=6 & Month<=8 & Hour >= 19 & Hour <= 24 | Month>=6 & Month<=8 & Hour >= 5 & Hour <= 8) #6pm to 12am and 4am to 8am
 summary(data_junaug)
 
-data_sep <- filter(data, Month==9 & Day <= 15 & Hour >= 19 & Hour <= 24 | Month==9 & Day <= 15 & Hour >= 5 & Hour <= 8)
+data_sep <- filter(data, Month==9 & Day <= 15 & Hour >= 19 & Hour <= 24 | Month==9 & Day <= 15 & Hour >= 5 & Hour <= 8) #6pm to 12am and 4am to 8am
 summary(data_sep)
 
 data_summer_lbase <- rbind(data_junaug, data_sep)
