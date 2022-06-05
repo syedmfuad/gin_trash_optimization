@@ -6,34 +6,59 @@ data_plot <- data_plot[c(1:16),] #1:16
 data_plot <- data_plot[c(17:44),] #1:16
 
 plot_sub <- subset(data_plot, Group1=="C=0, M=0" | Group1=="C=1, M=0" | Group1=="C=2, M=0")
-plot_sub <- subset(data_plot, Group1=="C=0, M=0" | Group1=="C=1, M=0" | Group1=="C=2, M=0" | Group1=="C=3, M=0" | 
+plot_sub <- subset(data_plot, Group1=="C=0, M=0" | Group1=="C=1, M=0" | Group1=="C=2, M=0" | Group1=="C=3, M=0" | Group1=="C=4, M=0" | 
                      Group1=="C=5, M=0" | Group1=="C=6, M=0")
 
 ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=Group1, alpha=Opaque)) +
-  geom_point() + geom_text(hjust=0, vjust=0) + coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50000, max(data_plot$Avg_profit)+50000), 
-                                                               xlim = c(min(data_plot$SD)-50000, max(data_plot$SD)+100000)) + 
+  geom_point() + geom_text(hjust=0, vjust=0, position = position_nudge(x = 10000, y=-5000)) +
+  #geom_point() + geom_text(hjust=0, vjust=0, position = position_nudge(x = ifelse(data_plot$SD ==   1391770 , -300000, 20000), y=-10000)) + 
+  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50000, max(data_plot$Avg_profit)+50000), 
+                  xlim = c(min(data_plot$SD)-50000, max(data_plot$SD)+100000)) + 
   geom_line(data = plot_sub) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") + 
-  #geom_text(position=position_jitter(width=1,height=1)) +
+  geom_segment(aes(x= 494065 ,xend=702822,y=369700,yend=369700), linetype = "dotted") +
+  #geom_segment(aes(x= 1482193 ,xend=2000000,y= 1237195 ,yend=1237195), linetype = "dotted") +
   theme(axis.text=element_text(size=50), axis.title=element_text(size=50), legend.position="none") + theme_minimal()
 
 #sensitivity analysis
 
 data_plot <- read_excel("Summary.xlsx")
-data_plot <- data_plot[c(1:3, 45, 46, 64, 65),] #1:16
+data_plot <- data_plot[c(1:3, 45, 46),] #1:16
 
 plot_sub <- data_plot[c(1:3),]
 plot_sub2 <- data_plot[c(1,4,5),]
-plot_sub3 <- subset(data_plot, Group=="C=0, M=0" | Group=="C=1, M=0" & Group2 == "SG_25" | Group=="C=2, M=0" & Group2 == "SG_25")
+#plot_sub3 <- subset(data_plot, Group=="C=0, M=0" | Group=="C=1, M=0" & Group2 == "SG_25" | Group=="C=2, M=0" & Group2 == "SG_25")
 
 
-ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0 (Base model & \n $25 base electricity)",
-                                                             "C=1, M=0", "C=2, M=0 (Lower conversion rate)", " ", " "))) +
-  geom_point() + geom_text(hjust=0, vjust=0) + coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50000, max(data_plot$Avg_profit)+50000), 
-                                                               xlim = c(min(data_plot$SD)-50000, max(data_plot$SD)+130000)) + 
-  geom_line(data = plot_sub, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0 (Base case + \n $25 base electricity)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") + 
-  geom_line(data = plot_sub2, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0 (Base case + \n $25 base electricity)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
-  geom_line(data = plot_sub3, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0 (Base case + \n $25 base electricity)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
+ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0 \n (Base model)",
+                                                             "C=1, M=0", "C=2, M=0 (Lower conversion rate)"))) +
+  geom_point() + geom_text(hjust=0, vjust=0, position = position_nudge(x = 10000, y=-5000)) + 
+  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50000, max(data_plot$Avg_profit)+50000), 
+                  xlim = c(min(data_plot$SD)-50000, max(data_plot$SD)+130000)) + 
+  geom_line(data = plot_sub, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0 (Base case)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") + 
+  geom_line(data = plot_sub2, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0 (Base case)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
+  #geom_line(data = plot_sub3, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0 (Base case + \n $25 base electricity)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
   theme(axis.text=element_text(size=75), axis.title=element_text(size=75)) + theme_minimal()
+
+
+
+data_plot <- read_excel("Summary.xlsx")
+data_plot <- data_plot[c(1:3, 64, 65),] #1:16
+
+plot_sub <- data_plot[c(1:3),]
+plot_sub2 <- data_plot[c(1,4,5),]
+#plot_sub3 <- subset(data_plot, Group=="C=0, M=0" | Group=="C=1, M=0" & Group2 == "SG_25" | Group=="C=2, M=0" & Group2 == "SG_25")
+
+
+ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0 \n (Base model & \n $25 base electricity)",
+                                                             " ", " "))) +
+  geom_point() + geom_text(hjust=0, vjust=0, position = position_nudge(x = 10000, y=-5000)) + 
+  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50000, max(data_plot$Avg_profit)+50000), 
+                  xlim = c(min(data_plot$SD)-50000, max(data_plot$SD)+130000)) + 
+  geom_line(data = plot_sub, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0 (Base case)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") + 
+  geom_line(data = plot_sub2, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0 (Base case)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
+  #geom_line(data = plot_sub3, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0 (Base case + \n $25 base electricity)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
+  theme(axis.text=element_text(size=75), axis.title=element_text(size=75)) + theme_minimal()
+
 
 
 
@@ -44,10 +69,11 @@ plot_sub <- data_plot[c(1, 2, 3),]
 plot_sub2 <- data_plot[c(1,4,5),]
 
 
-ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=1", "C=2, M=1 (Base model & \n lower marginal cost)", " ",
+ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=1", "C=2, M=1 \n (Base model & \n lower marginal cost)", " ",
                                                              " "))) +
-  geom_point() + geom_text(hjust=0, vjust=0) + coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50000, max(data_plot$Avg_profit)+50000), 
-                                                               xlim = c(min(data_plot$SD)-50000, max(data_plot$SD)+100000)) + 
+  geom_point() + geom_text(hjust=0, vjust=0, position = position_nudge(x = 10000, y=-5000))  + 
+  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50000, max(data_plot$Avg_profit)+50000), 
+                  xlim = c(min(data_plot$SD)-50000, max(data_plot$SD)+100000)) + 
   geom_line(data = plot_sub, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=1", "C=2, M=1 (Base model & \n lower marginal cost)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") + 
   geom_line(data = plot_sub2, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=1", "C=2, M=1 (Base model & \n lower marginal cost)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
   theme(axis.text=element_text(size=50), axis.title=element_text(size=50)) + theme_minimal()
@@ -77,7 +103,102 @@ ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M
   theme(axis.text=element_text(size=75), axis.title=element_text(size=75)) + theme_minimal()
 
 
+#medium gin
 
+data_plot <- read_excel("Summary.xlsx")
+data_plot <- data_plot[c(17:23, 49:52),] #1:16
+
+plot_sub <- data_plot[c(1:7),] #base
+plot_sub2 <- data_plot[c(1, 8:11),] #low conversion
+#plot_sub3 <- data_plot[c(1, 12:17),] #base price 25
+
+ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0 \n (Base model)",
+                                                             "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0 (Lower conversion rate)"))) +
+  geom_point() + geom_text(hjust=0, vjust=0, position = position_nudge(x = ifelse(data_plot$SD ==   1391770 , -225000, 20000), y=-10000)) + 
+  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50000, max(data_plot$Avg_profit)+50000), 
+                  xlim = c(min(data_plot$SD)-50000, max(data_plot$SD)+160000)) + 
+  geom_line(data = plot_sub, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0 (Base model & \n $25 base electricity)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") + 
+  geom_line(data = plot_sub2, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0 (Lower conversion rate)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
+  #geom_line(data = plot_sub3, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c(" ", " ", " ", " ", " ", " ", " "))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
+  theme(axis.text=element_text(size=100), axis.title=element_text(size=100)) + theme_minimal()
+
+
+data_plot <- read_excel("Summary.xlsx")
+data_plot <- data_plot[c(17:23, 67:72),] #1:16
+
+plot_sub <- data_plot[c(1:7),] #base
+plot_sub2 <- data_plot[c(1, 8:13),] #low conversion
+#plot_sub3 <- data_plot[c(1, 12:17),] #base price 25
+
+ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0 \n (Base model & \n $25 base electricity)",
+                                                             " ", " ", " ", " ", " ", " "))) +
+  geom_point() + geom_text(hjust=0, vjust=0, position = position_nudge(x = ifelse(data_plot$SD ==   1391770 , -225000, 20000), y=-10000)) + 
+  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50000, max(data_plot$Avg_profit)+75000), 
+                  xlim = c(min(data_plot$SD)-50000, max(data_plot$SD)+250000)) + 
+  geom_line(data = plot_sub, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0 \n (Base model & \n $25 base electricity)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") + 
+  geom_line(data = plot_sub2, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0 (Lower conversion rate)", " ", " "))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
+  #geom_line(data = plot_sub3, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c(" ", " ", " ", " ", " ", " ", " "))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
+  theme(axis.text=element_text(size=100), axis.title=element_text(size=100)) + theme_minimal()
+
+
+
+data_plot <- read_excel("Summary.xlsx")
+data_plot <- data_plot[c(17:23, 57:62),] #1:16
+
+plot_sub <- data_plot[c(1:7),] #base
+plot_sub2 <- data_plot[c(1, 8:13),] #low conversion
+#plot_sub3 <- data_plot[c(1, 12:17),] #base price 25
+
+ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0 \n (Base model & \n lower marginal cost)",
+                                                             " ", " ", " ", " ", " ", " "))) +
+  geom_point() + geom_text(hjust=0, vjust=0, position = position_nudge(x = ifelse(data_plot$SD ==   1391770 , -225000, 20000), y=-10000)) + 
+  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50000, max(data_plot$Avg_profit)+75000), 
+                  xlim = c(min(data_plot$SD)-50000, max(data_plot$SD)+250000)) + 
+  geom_line(data = plot_sub, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0 \n (Base model & \n $25 base electricity)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") + 
+  geom_line(data = plot_sub2, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0 (Lower conversion rate)", " ", " "))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
+  #geom_line(data = plot_sub3, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c(" ", " ", " ", " ", " ", " ", " "))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
+  theme(axis.text=element_text(size=100), axis.title=element_text(size=100)) + theme_minimal()
+
+
+
+data_plot <- read_excel("Summary.xlsx")
+data_plot <- data_plot[c(1, 27:31, 57:61),] #1:16
+
+plot_sub <- data_plot[c(1:6),] #base
+plot_sub2 <- data_plot[c(1, 7:11),] #low conversion
+
+ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=1", "C=2, M=1", "C=3, M=1", "C=4, M=1", "C=5, M=1 (Base model & \n lower marginal cost)",
+                                                             " ", " ", " ", " ", " "))) +
+  geom_point() + geom_text(hjust=0, vjust=0) + coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50000, max(data_plot$Avg_profit)+50000), 
+                                                               xlim = c(min(data_plot$SD)-50000, max(data_plot$SD)+175000)) + 
+  geom_line(data = plot_sub, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=1", "C=2, M=1", "C=3, M=1", "C=4, M=1", "C=5, M=1 (Base model & \n lower marginal cost)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") + 
+  geom_line(data = plot_sub2, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c(" ", " ", " ", " ", " ", " "))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
+  theme(axis.text=element_text(size=75), axis.title=element_text(size=75)) + theme_minimal()
+
+
+
+
+data_plot <- read_excel("Summary.xlsx")
+data_plot <- data_plot[c(17:23, 27:31, 49:52, 57:61, 67:72),] #1:16
+
+plot_sub <- data_plot[c(1:7),] #base
+plot_sub2 <- data_plot[c(1, 8:12),] #base w/ m=1
+plot_sub3 <- data_plot[c(1, 13:16),] #low conversion
+plot_sub4 <- data_plot[c(1, 17:21),] #marginal cost w/ m=1
+plot_sub5 <- data_plot[c(1, 22:27),] #base price 25
+
+ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0 (Base model & \n $25 base electricity)",
+                                                             "C=1, M=1", "C=2, M=1", "C=3, M=1", "C=4, M=1", "C=5, M=1 (Base model & \n lower marginal cost)",
+                                                             "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0 (Lower conversion rate)", 
+                                                             " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "))) +
+  geom_point() + geom_text(hjust=0, vjust=0) + coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50000, max(data_plot$Avg_profit)+50000), 
+                                                               xlim = c(min(data_plot$SD)-50000, max(data_plot$SD)+130000)) + 
+  geom_line(data = plot_sub, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0 (Base model & \n $25 base electricity)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") + 
+  geom_line(data = plot_sub2, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=1", "C=2, M=1", "C=3, M=1", "C=4, M=1", "C=5, M=1"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
+  geom_line(data = plot_sub3, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0 (Lower conversion rate)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
+  geom_line(data = plot_sub4, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c(" ", " ", " ", " ", " ", " "))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
+  geom_line(data = plot_sub5, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0 (Base case + \n $25 base electricity)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
+  theme(axis.text=element_text(size=75), axis.title=element_text(size=75)) + theme_minimal()
 
 
 
@@ -274,4 +395,29 @@ lines(d, col="red", lwd = 3)
 abline(v = median(gin1$gin), col = "black", lwd = 3)
 text(median(gin1$gin), max(density(gin1$gin)[[2]])+0.00003,  paste("Observed median =", 8740),  pos = 4, srt = 0, cex = 1.50, col = "black") 
 abline(v = median(gin2$gin), col = "black", lwd = 3, lty = 2)
-text(median(gin2$gin), max(density(gin2$gin)[[2]]),  paste("Simulated median =", 9763),  pos = 4, srt = 0, cex = 1.50, col = "black")
+text(median(gin2$gin), max(density(gin2$gin)[[2]]),  paste("Simulated median =", 9763),  pos = 4, srt = 0, cex = 1.50, col = "black") 
+
+
+#ammonia price
+
+amm1 = data %>% select(winter_crop, summer_crop, roy_crop)
+amm2 <- rbind(crop_winter, crop_summer, crop_roy)
+
+amm1 <- cbind(row = rownames(amm1), stack(amm1))
+
+amm1 %>% filter(between(values, quantile(values, 0.05), quantile(values, 0.95))) -> amm1
+amm2 %>% filter(between(ANHYD, quantile(ANHYD, 0.05), quantile(ANHYD, 0.95))) -> amm2
+
+hist(amm1$values, breaks=10, probability=TRUE, col="gray", border="white", main="Distribution of Ammonia price", xlab="Ammonia price ($)", 
+     cex.lab=1.5, ylim=c(0, 0.010), xlim=c(min(amm2$ANHYD-50), max(amm2$ANHYD+50)))
+d <- density(amm2$ANHYD)
+lines(d, col="red", lwd = 3)
+abline(v = median(amm1$values), col = "black", lwd = 3, lty = 2)
+#text(median(amm1$values), max(density(amm1$values)[[2]]),  paste("Simulated median =", 507),  pos = 4, srt = 0, cex = 1.50, col = "black") 
+
+text(median(amm1$values), max(density(amm1$values)[[2]])-0.00425,  paste("Simulated median =", 507),  pos = 4, srt = 0, cex = 1.5, col = "black")
+
+abline(v = median(amm2$ANHYD), col = "black", lwd = 3)
+text(median(amm2$ANHYD), max(density(amm2$ANHYD)[[2]]),  paste("Observed median =", 537),  pos = 4, srt = 0, cex = 1.50, col = "black")
+
+
