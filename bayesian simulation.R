@@ -1,5 +1,26 @@
 rm(list=ls())
 
+
+
+#Operating hours           #Date              Time
+
+#Peak electricity      Dec 15-Dec 31      5am-9am (4hr) 
+#                      Jan 01-Feb 28      5am-9am and 5pm-8pm (7hr) 
+#                      Mar 01-Mar 15      5am-9am (4hr) 
+#                      Jun 01-Sept 15     1pm-6pm (5hr)
+
+#Sub-peak electricity  Dec 15-Dec 31      9am-8pm (11hr) 
+#                      Jan 01-Feb 28      9am-5pm (8hr) 
+#                      Mar 01-Mar 15      9am-8pm (11hr)
+#                      Mar 15-May 31      6am-8pm (14hr) 
+#                      Jun 01-Sept 15     8am-1pm (5hr)
+
+#Base electricity      Dec 15-May 31      8pm-12am and 4am (5hr) 
+#                      Jun 01-Sept 15     6pm-12am and 4am-8am (10hr)
+
+
+############## ELECTRICITY PRICES ##############
+
 set.seed(12345)
 
 library(dplyr)
@@ -128,7 +149,7 @@ data_summer_lbase %>% group_by(Hour)  %>%
 
 rm(data_dec, data_janfeb, data_janmay, data_junaug, data_mar, data_sep)
 
-#temperature
+############## TEMPERATURE ##############
 
 #source: https://mesonet.agron.iastate.edu/request/download.phtml?network=TX_ASOS#
 #ASOS-AWOS-METAR Data Download
@@ -163,9 +184,13 @@ peak <- rbind(data_winter_peak,data_summer_peak)
 ubase <- rbind(data_winter_ubase,data_summer_ubase)
 lbase <- rbind(data_winter_lbase,data_summer_lbase)
 
+#check if all months exist
+
 unique(peak$Month)
 unique(ubase$Month)
 unique(lbase$Month)
+
+#getting month-wise prices and temperature
 
 peak_jan <- subset(peak, Month==1)
 peak_feb <- subset(peak, Month==2)
@@ -200,7 +225,7 @@ lbase_dec <- subset(lbase, Month==12)
 
 summary(lm(price ~ temp+I(temp*temp)+weekday, data=peak_feb))
 
-#bayesian
+############## BAYESIAN SIMULATION ##############
 
 bayesian_elec <- function(df) {
   
@@ -284,22 +309,23 @@ bayesian_elec <- function(df) {
   
 }
 
-df <- lbase_dec #change
+df <- lbase_dec #specify month
 
-lbase_dec_boot <- sample(df[,"price"], 10000, replace=TRUE) #change
+#simple bootstrap for comparison
+lbase_dec_boot <- sample(df[,"price"], 10000, replace=TRUE) #rename
 
+#bayesian simulation
 price <- bayesian_elec(df=df)
 
 plot(ecdf(x = price), main = "Empirical cumulative distribution function (base prices)")
 lines(ecdf(x = df[,"price"]), col = 2)
-
 plot(density(price,500), lwd = 2, main = "Kernel density plot (base prices)")
 lines(density(df[,"price"],500), col=2)
 lines(density(lbase_dec_boot, 500), col=3)
 
-summary(price); summary(df[,"price"]); summary(lbase_dec_boot) #change
+summary(price); summary(df[,"price"]); summary(lbase_dec_boot) #adjust name
 
-dec_lbase <- price #change
+dec_lbase <- price #adjust name
 
 peak_price <- data.frame(jan_peak=jan_peak[,1], jan_boot=peak_jan_boot, feb_peak=feb_peak[,1], feb_boot=peak_feb_boot,
                          mar_peak=mar_peak[,1], mar_boot=peak_mar_boot, jun_peak=jun_peak[,1], jun_boot=peak_jun_boot,
@@ -324,7 +350,7 @@ lbase_price <- data.frame(jan_lbase=jan_lbase[,1], jan_boot=lbase_jan_boot, feb_
 
 write.csv(lbase_price, file="lbase_price.csv")
 
-#crops and fertilizers
+############## CROPS AND FERTILIZER PRICE FOR AMMONIA SIMULATION ##############
 
 fert <- read.csv("Fertilizer prices.csv")
 fert$ID <- paste(fert$Month, fert$Year)
@@ -391,6 +417,7 @@ crop <- merge(x = crop, y = wti[ , c("ID", "WTI", "WTI_sq")], by = "ID")
 
 crop <- arrange(crop,Year,Month)
 
+#season-wise ammonia and crop prices
 crop_winter <- subset(crop, Month==12 | Month==1 | Month==2)
 crop_summer <- subset(crop, Month==3 | Month==4 | Month==5)
 crop_roy <- subset(crop, Month==6 | Month==7 | Month==8 | Month==9)
@@ -398,7 +425,7 @@ crop_roy <- subset(crop, Month==6 | Month==7 | Month==8 | Month==9)
 summary(lm(ANHYD ~ Corn + Corn_sq + Cotton + Cotton_sq + Oats + Oats_sq + 
              lag(WTI, 9), data=crop))
 
-#for bayesian
+############## BAYESIAN SIMULATION ##############
 
 bayesian_amm <- function(df){
   
@@ -490,10 +517,12 @@ bayesian_amm <- function(df){
   
 }
 
-df <- crop_roy #change
+df <- crop_roy #specify season
 
-crop_roy_boot <- sample(df[,"ANHYD"], 10000, replace=TRUE) #change
+#simple bootstrap for comparison
+crop_roy_boot <- sample(df[,"ANHYD"], 10000, replace=TRUE) #rename
 
+#bayesian simulation
 price <- bayesian_amm(df=df)
 
 plot(ecdf(x = price), main = "Empirical cumulative distribution function (base prices)")
@@ -503,9 +532,9 @@ plot(density(price,500), lwd = 2, main = "Kernel density plot (base prices)")
 lines(density(df[,"ANHYD"],500), col=2)
 lines(density(crop_roy_boot, 500), col=3)
 
-summary(price); summary(df[,"ANHYD"]); summary(crop_roy_boot) #change
+summary(price); summary(df[,"ANHYD"]); summary(crop_roy_boot) #adjust name
 
-roy_crop <- price #change
+roy_crop <- price #adjust name
 
 amm_price <- data.frame(winter_crop=winter_crop[,1], winter_boot=crop_winter_boot,
                         summer_crop=summer_crop[,1], summer_boot=crop_summer_boot,
@@ -513,7 +542,7 @@ amm_price <- data.frame(winter_crop=winter_crop[,1], winter_boot=crop_winter_boo
 
 write.csv(amm_price, file="amm_price.csv")
 
-#practise
+############## GIN TRASH BAYESIAN SIMULATION ##############
 
 gin <- read.csv("Ropes Coop Gin Trash 2004-2018.csv")
 
@@ -606,6 +635,7 @@ Y15 <- list_estimate[[15]][sample(nrow(list_estimate[[15]]),size=666,replace=FAL
 
 Y <- c(Y1,Y2,Y3,Y4,Y5,Y6,Y7,Y8,Y9,Y10,Y11,Y12,Y13,Y14,Y15)
 
+#simple bootstrap for comparison
 gin_boot <- sample(gin$gin, 10000, replace=TRUE)
 
 summary(Y); summary(gin$gin); summary(gin_boot)
@@ -623,91 +653,3 @@ lines(ecdf(x = gin$gin/9), col = 2)
 lines(density(crop_roy_boot, 500), col=3)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#old plot
-
-data <- read.csv("Ercot_19_21.csv")
-data_19 <- subset(data, Settlement_Point=="HB_WEST")
-data_19 <- subset(data_19, Year==2021)
-data19_6 <- subset(data_19, Month==2)
-data19_6$Settlement_Point_Price <- as.numeric(data19_6$Settlement_Point_Price)
-
-data_plot = data19_6 %>% group_by(Hour)  %>%
-  summarise(price_tot = mean(Settlement_Point_Price, na.rm=TRUE))
-
-
-anc <- read.csv("Ancilliary.csv")
-anc_19 <- subset(anc, Year==2015)
-anc19_6 <- subset(anc_19, Month==12)
-
-anc_plot = anc19_6 %>% group_by(Hour)  %>%
-  summarise(price_anc = mean(Total, na.rm=TRUE))
-
-totalplot <- merge(data_plot, anc_plot, by="Hour")
-totalplot$price <- totalplot$price_tot+totalplot$price_anc
-
-plot(totalplot$Hour, totalplot$price, type="b", ylab="Price (mwh)", xlab="Hour", main="Dec 2015", lwd=2, pch=15)
-axis(1, xaxp=c(1, 24, 23), las=1)
-
-#extra
-
-#peak prices
-
-#winter peak
-
-data_dec <- filter(data, Month==12 & Day >= 15 & Day <= 31 & Hour >= 6 & Hour <= 9 & Settlement_Point=="HB_WEST")
-summary(data_dec)
-
-data_janfeb <- filter(data, Month>=1 & Month <= 2 & Hour >= 6 & Hour <= 9 & Settlement_Point=="HB_WEST" | Month>=1 & Month <= 2 & 
-                        Hour >= 18 & Hour <= 20 & Settlement_Point=="HB_WEST")
-summary(data_janfeb)
-
-data_mar <- filter(data, Month==3 & Day >= 1 & Day <= 15 & Hour >= 6 & Hour <= 9 & Settlement_Point=="HB_WEST")
-summary(data_mar)
-
-data_winter <- rbind(data_dec, data_janfeb, data_mar)
-summary(data_winter)
-
-data_winter %>% group_by(Hour)  %>%
-  summarise(price_tot = mean(Settlement_Point_Price, na.rm=TRUE))
-
-#summer peak
-
-data_junaug <- filter(data, Month>=6 & Month<=8 & Hour >= 14 & Hour <= 18 & Settlement_Point=="HB_WEST")
-summary(data_junaug)
-
-data_sep <- filter(data, Month==9 & Day <= 15 & Hour >= 14 & Hour <= 18 & Settlement_Point=="HB_WEST")
-summary(data_sep)
-
-data_summer <- rbind(data_junaug, data_sep)
-summary(data_summer)
-
-data_summer = data_summer %>% group_by(Hour)  %>%
-  summarise(price_tot = mean(Settlement_Point_Price, na.rm=TRUE))
