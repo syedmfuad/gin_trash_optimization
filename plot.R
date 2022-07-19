@@ -1,23 +1,25 @@
 #plot
 
 library(readxl)
+library(ggplot2)
 data_plot <- read_excel("Summary.xlsx")
 
 ############## BASE MODELS ##############
 
 #plot EV frontier for small gin
 
+data_plot <- read_excel("Summary.xlsx")
 data_plot <- data_plot[c(1:16),] 
 
 plot_sub <- subset(data_plot, Group1=="C=0, M=0" | Group1=="C=1, M=0" | Group1=="C=2, M=0")
 
 ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=Group1, alpha=Opaque)) +
-  geom_point() + geom_text(hjust=0, vjust=0, position = position_nudge(x = 10000, y=-5000)) +
-  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50000, max(data_plot$Avg_profit)+50000), 
-                  xlim = c(min(data_plot$SD)-50000, max(data_plot$SD)+100000)) + 
-  geom_line(data = plot_sub) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") + 
-  geom_segment(aes(x= 494065 ,xend=702822,y=369700,yend=369700), linetype = "dotted") +
-  theme(axis.text=element_text(size=50), axis.title=element_text(size=50), legend.position="none") + theme_minimal()
+  geom_point(size=3) + geom_text(hjust=0, vjust=0, position = position_nudge(x = 10.000, y=-5.000), size=5) +
+  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50.000, max(data_plot$Avg_profit)+50.000), 
+                  xlim = c(min(data_plot$SD)-50.000, max(data_plot$SD)+100.000)) + 
+  geom_line(data = plot_sub, size=0.75) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") + 
+  geom_segment(aes(x= 494.065 ,xend=1100.822,y=369.700,yend=369.700), linetype = "dotted") +
+  theme(axis.text=element_text(size=50), axis.title=element_text(size=50), legend.position="none") + theme_minimal(base_size = 20)
 
 #plot EV frontier for medium gin
 
@@ -27,12 +29,12 @@ plot_sub <- subset(data_plot, Group1=="C=0, M=0" | Group1=="C=1, M=0" | Group1==
                      Group1=="C=5, M=0" | Group1=="C=6, M=0")
 
 ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=Group1, alpha=Opaque)) +
-  geom_point() + geom_text(hjust=0, vjust=0, position = position_nudge(x = ifelse(data_plot$SD ==   1391770 , -300000, 20000), y=-10000)) + 
-  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50000, max(data_plot$Avg_profit)+50000), 
-                  xlim = c(min(data_plot$SD)-50000, max(data_plot$SD)+100000)) + 
-  geom_line(data = plot_sub) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") + 
-  geom_segment(aes(x= 1482193 ,xend=2000000,y= 1237195 ,yend=1237195), linetype = "dotted") +
-  theme(axis.text=element_text(size=50), axis.title=element_text(size=50), legend.position="none") + theme_minimal()
+  geom_point(size=3) + geom_text(hjust=0, vjust=0, position = position_nudge(x = ifelse(data_plot$SD ==   1391.770 , -425.000, 20.000), y=-10.000), size=5) + 
+  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50.000, max(data_plot$Avg_profit)+50.000), 
+                  xlim = c(min(data_plot$SD)-50.000, max(data_plot$SD)+100.000)) + 
+  geom_line(data = plot_sub, size=0.75) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") + 
+  geom_segment(aes(x= 1482.193 ,xend=2000.000,y= 1237.195 ,yend=1237.195), linetype = "dotted") +
+  theme(axis.text=element_text(size=50), axis.title=element_text(size=50), legend.position="none") + theme_minimal(base_size = 20)
 
 #plot EV frontier with fixed cost for operator
 
@@ -42,11 +44,11 @@ data_plot <- data_plot[c(1, 74:88),]
 plot_sub <- subset(data_plot, Group1=="C=0, M=0" | Group1=="C=1, M=0" | Group1=="C=2, M=0")
 
 ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=Group1, alpha=Opaque)) +
-  geom_point() + geom_text(hjust=0, vjust=0, position = position_nudge(x = 10000, y=-5000)) +
-  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50000, max(data_plot$Avg_profit)+50000), 
-                  xlim = c(min(data_plot$SD)-50000, max(data_plot$SD)+100000)) + 
+  geom_point() + geom_text(hjust=0, vjust=0, position = position_nudge(x = 10.000, y=-5.000)) +
+  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50.000, max(data_plot$Avg_profit)+50.000), 
+                  xlim = c(min(data_plot$SD)-50.000, max(data_plot$SD)+100.000)) + 
   geom_line(data = plot_sub) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") + 
-  geom_segment(aes(x= 494065 ,xend=702822,y=294700.1,yend=294700.1), linetype = "dotted") +
+  geom_segment(aes(x= 494.065 ,xend=702.822,y=294.700,yend=294.700), linetype = "dotted") +
   theme(axis.text=element_text(size=50), axis.title=element_text(size=50), legend.position="none") + theme_minimal()
 
 ############## SENSITIVITY ANALYSIS ##############
@@ -59,14 +61,33 @@ data_plot <- data_plot[c(1:3, 45, 46),]
 plot_sub <- data_plot[c(1:3),]
 plot_sub2 <- data_plot[c(1,4,5),]
 
-ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0 \n (Base model)",
-                                                             "C=1, M=0", "C=2, M=0 (Lower conversion rate)"))) +
-  geom_point() + geom_text(hjust=0, vjust=0, position = position_nudge(x = 10000, y=-5000)) + 
-  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50000, max(data_plot$Avg_profit)+50000), 
-                  xlim = c(min(data_plot$SD)-50000, max(data_plot$SD)+130000)) + 
-  geom_line(data = plot_sub, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0 (Base case)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") + 
-  geom_line(data = plot_sub2, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0 (Base case)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
-  theme(axis.text=element_text(size=75), axis.title=element_text(size=75)) + theme_minimal()
+ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0",
+                                                             "C=1, M=0", "C=2, M=0"))) +
+  geom_point(size=2) + geom_text(hjust=0, vjust=0, position = position_nudge(x = 10.000, y=-5.000), size=5) + 
+  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50.000, max(data_plot$Avg_profit)+50.000), 
+                  xlim = c(min(data_plot$SD)-50.000, max(data_plot$SD)+180.000)) + 
+  geom_line(data = plot_sub, size=0.75, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0"))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") + 
+  geom_line(data = plot_sub2, size=0.75, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0"))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") +
+  theme(axis.text=element_text(size=125), axis.title=element_text(size=125)) + theme_minimal(base_size = 15)
+
+
+
+data_plot <- read_excel("Summary.xlsx")
+data_plot <- data_plot[c(1:4, 45, 46, 47),]
+
+plot_sub <- data_plot[c(1:3),]
+plot_sub2 <- data_plot[c(1,5,6),]
+
+ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0",
+                                                             "C=1, M=0", "C=2, M=0", "C=3, M=0"))) +
+  geom_point(size=2, aes(alpha = Opaque)) + geom_text(hjust=0, vjust=0, position = position_nudge(x = 10.000, y=-5.000), size=5, aes(alpha = Opaque)) + 
+  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50.000, max(data_plot$Avg_profit)+50.000), 
+                  xlim = c(min(data_plot$SD)-50.000, max(data_plot$SD)+180.000)) + 
+  geom_line(data = plot_sub, size=0.75, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0"))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") + 
+  geom_line(data = plot_sub2, size=0.75, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0"))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") +
+  theme(axis.text=element_text(size=125), axis.title=element_text(size=125)) + theme_minimal(base_size = 15)
+
+
 
 #plot EV frontier for small gin (base case and lower base electricity price)
 
@@ -76,14 +97,36 @@ data_plot <- data_plot[c(1:3, 64, 65),]
 plot_sub <- data_plot[c(1:3),]
 plot_sub2 <- data_plot[c(1,4,5),]
 
-ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0 \n (Base model & \n $25 base electricity)",
+ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0",
                                                              " ", " "))) +
-  geom_point() + geom_text(hjust=0, vjust=0, position = position_nudge(x = 10000, y=-5000)) + 
-  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50000, max(data_plot$Avg_profit)+50000), 
-                  xlim = c(min(data_plot$SD)-50000, max(data_plot$SD)+130000)) + 
-  geom_line(data = plot_sub, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0 (Base case)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") + 
-  geom_line(data = plot_sub2, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0 (Base case)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
-  theme(axis.text=element_text(size=75), axis.title=element_text(size=75)) + theme_minimal()
+  geom_point(size=2) + geom_text(hjust=0, vjust=0, position = position_nudge(x = 10.000, y=-5.000), size=5) + 
+  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50.000, max(data_plot$Avg_profit)+50.000), 
+                  xlim = c(min(data_plot$SD)-50.000, max(data_plot$SD)+130.000)) + 
+  geom_line(data = plot_sub, alpha=0.5, size=0.75, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0"))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") + 
+  geom_line(data = plot_sub2, size=0.75, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0"))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") +
+  theme(axis.text=element_text(size=75), axis.title=element_text(size=75)) + theme_minimal(base_size = 15)
+
+
+
+
+
+data_plot <- read_excel("Summary.xlsx")
+data_plot <- data_plot[c(1:4, 64, 65, 66),]
+
+plot_sub <- data_plot[c(1:3),]
+plot_sub2 <- data_plot[c(1,5,6),]
+
+ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0",
+                                                             "", " ", "C=3, M=0"))) +
+  geom_point(size=2, aes(alpha = Opaque)) + geom_text(hjust=0, vjust=0, position = position_nudge(x = 10.000, y=-5.000), size=5, aes(alpha = Opaque)) + 
+  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50.000, max(data_plot$Avg_profit)+50.000), 
+                  xlim = c(min(data_plot$SD)-50.000, max(data_plot$SD)+130.000)) + 
+  geom_line(data = plot_sub, alpha=0.5, size=0.75, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0"))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") + 
+  geom_line(data = plot_sub2, size=0.75, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0"))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") +
+  theme(axis.text=element_text(size=75), axis.title=element_text(size=75)) + theme_minimal(base_size = 15)
+
+
+
 
 #plot EV frontier for small gin (base case and lower marginal cost of ammonia production)
 
@@ -100,6 +143,48 @@ ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M
   geom_line(data = plot_sub, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=1", "C=2, M=1 (Base model & \n lower marginal cost)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") + 
   geom_line(data = plot_sub2, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=1", "C=2, M=1 (Base model & \n lower marginal cost)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
   theme(axis.text=element_text(size=50), axis.title=element_text(size=50)) + theme_minimal()
+
+
+
+data_plot <- read_excel("Summary.xlsx")
+data_plot <- data_plot[c(1, 7, 8, 9, 54, 55, 56),]
+
+plot_sub <- data_plot[c(1, 2, 3),]
+plot_sub2 <- data_plot[c(1,5,6),]
+
+ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=1", "C=2, M=1", "C=3, M=1",  " ", " ", " "))) +
+  geom_point(size=2, aes(alpha = Opaque)) + geom_text(hjust=0, vjust=0, position = position_nudge(x = 10.000, y=-5.000), size=5, aes(alpha = Opaque))  + 
+  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50.000, max(data_plot$Avg_profit)+50.000), 
+                  xlim = c(min(data_plot$SD)-50.000, max(data_plot$SD)+100.000)) + 
+  geom_line(data = plot_sub, alpha=0.5, size=0.75, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=1", "C=2, M=1"))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") + 
+  geom_line(data = plot_sub2, size=0.75, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=1", "C=2, M=1"))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") +
+  theme(axis.text=element_text(size=50), axis.title=element_text(size=50)) + theme_minimal(base_size = 15)
+
+
+
+
+
+#plot EV frontier with fixed cost for operator
+
+data_plot <- read_excel("Summary.xlsx")
+data_plot <- data_plot[c(1:4, 75:76),]
+
+plot_sub <- data_plot[c(1:3),]
+plot_sub2 <- data_plot[c(1,5),]
+
+ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0",
+                                                             "C=2, M=0", "C=3, M=0"))) +
+  geom_point(size=2, aes(alpha = Opaque)) + geom_text(hjust=0, vjust=0, position = position_nudge(x = 10.000, y=-5.000), size=5, aes(alpha = Opaque)) + 
+  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50.000, max(data_plot$Avg_profit)+50.000), 
+                  xlim = c(min(data_plot$SD)-50.000, max(data_plot$SD)+130.000)) + 
+  geom_line(data = plot_sub, size=0.75, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0"))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") + 
+  geom_line(data = plot_sub2, size=0.75, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=2, M=0"))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") +
+  theme(axis.text=element_text(size=75), axis.title=element_text(size=75)) + theme_minimal(base_size = 15)
+
+
+
+
+
 
 #plot EV frontier for small gin (base case and all sensitivity analyses)
 
@@ -124,6 +209,8 @@ ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M
   geom_line(data = plot_sub5, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0 (Base case + \n $25 base electricity)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
   theme(axis.text=element_text(size=75), axis.title=element_text(size=75)) + theme_minimal()
 
+
+
 #plot EV frontier for medium gin (base case and lower biomass conversion rate)
 
 data_plot <- read_excel("Summary.xlsx")
@@ -132,14 +219,35 @@ data_plot <- data_plot[c(17:23, 49:52),]
 plot_sub <- data_plot[c(1:7),] #base
 plot_sub2 <- data_plot[c(1, 8:11),] #low conversion
 
-ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0 \n (Base model)",
-                                                             "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0 (Lower conversion rate)"))) +
-  geom_point() + geom_text(hjust=0, vjust=0, position = position_nudge(x = ifelse(data_plot$SD ==   1391770 , -225000, 20000), y=-10000)) + 
-  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50000, max(data_plot$Avg_profit)+50000), 
-                  xlim = c(min(data_plot$SD)-50000, max(data_plot$SD)+160000)) + 
-  geom_line(data = plot_sub, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0 (Base model & \n $25 base electricity)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") + 
-  geom_line(data = plot_sub2, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0 (Lower conversion rate)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
-  theme(axis.text=element_text(size=100), axis.title=element_text(size=100)) + theme_minimal()
+ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0",
+                                                             "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0"))) +
+  geom_point(size=2) + geom_text(hjust=0, vjust=0, position = position_nudge(x = ifelse(data_plot$SD ==   1391.770 , -350.000, 30.000), y=-10.000), size=5) + 
+  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50.000, max(data_plot$Avg_profit)+50.000), 
+                  xlim = c(min(data_plot$SD)-50.000, max(data_plot$SD)+300.000)) + 
+  geom_line(data = plot_sub, size=0.75, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0"))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") + 
+  geom_line(data = plot_sub2, size=0.75, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0"))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") +
+  theme(axis.text=element_text(size=100), axis.title=element_text(size=100)) + theme_minimal(base_size = 15)
+
+
+
+
+data_plot <- read_excel("Summary.xlsx")
+data_plot <- data_plot[c(17:24, 49:53),]
+
+plot_sub <- data_plot[c(1:7),] #base
+plot_sub2 <- data_plot[c(1, 9:12),] #low conversion
+
+ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0", "C=7, M=0",
+                                                             "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0"))) +
+  geom_point(size=2, aes(alpha = Opaque)) + geom_text(hjust=0, vjust=0, position = position_nudge(x = ifelse(data_plot$SD ==   1391.770 , -500.000, 30.000), y=-10.000), size=5, aes(alpha = Opaque)) + 
+  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50.000, max(data_plot$Avg_profit)+50.000), 
+                  xlim = c(min(data_plot$SD)-50.000, max(data_plot$SD)+300.000)) + 
+  geom_line(data = plot_sub, size=0.75, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0"))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") + 
+  geom_line(data = plot_sub2, size=0.75, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0"))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") +
+  theme(axis.text=element_text(size=100), axis.title=element_text(size=100)) + theme_minimal(base_size = 15)
+
+
+
 
 #plot EV frontier for medium gin (base case and lower base electricity price)
 
@@ -149,14 +257,34 @@ data_plot <- data_plot[c(17:23, 67:72),] #1:16
 plot_sub <- data_plot[c(1:7),] #base
 plot_sub2 <- data_plot[c(1, 8:13),] #base price 25
 
-ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0 \n (Base model & \n $25 base electricity)",
+ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0",
                                                              " ", " ", " ", " ", " ", " "))) +
-  geom_point() + geom_text(hjust=0, vjust=0, position = position_nudge(x = ifelse(data_plot$SD ==   1391770 , -225000, 20000), y=-10000)) + 
-  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50000, max(data_plot$Avg_profit)+75000), 
-                  xlim = c(min(data_plot$SD)-50000, max(data_plot$SD)+250000)) + 
-  geom_line(data = plot_sub, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0 \n (Base model & \n $25 base electricity)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") + 
-  geom_line(data = plot_sub2, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0 (Lower conversion rate)", " ", " "))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
-  theme(axis.text=element_text(size=100), axis.title=element_text(size=100)) + theme_minimal()
+  geom_point(size=2) + geom_text(hjust=0, vjust=0, position = position_nudge(x = ifelse(data_plot$SD ==   1391.770 , -300.000, 20.000), y=-10.000), size=5) + 
+  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50.000, max(data_plot$Avg_profit)+75.000), 
+                  xlim = c(min(data_plot$SD)-50.000, max(data_plot$SD)+250.000)) + 
+  geom_line(data = plot_sub, alpha=0.50, size=0.75, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0"))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") + 
+  geom_line(data = plot_sub2, size=0.75, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", " ", " "))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") +
+  theme(axis.text=element_text(size=100), axis.title=element_text(size=100)) + theme_minimal(base_size = 15)
+
+
+
+
+data_plot <- read_excel("Summary.xlsx")
+data_plot <- data_plot[c(17:24, 67:73),] #1:16
+
+plot_sub <- data_plot[c(1:7),] #base
+plot_sub2 <- data_plot[c(1, 9:14),] #base price 25
+
+ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0", "C=7, M=0",
+                                                             " ", " ", " ", " ", " ", " ", " "))) +
+  geom_point(size=2, aes(alpha = Opaque)) + geom_text(hjust=0, vjust=0, position = position_nudge(x = ifelse(data_plot$SD ==   1391.770 , -500.000, 20.000), y=-10.000), size=5, aes(alpha = Opaque)) + 
+  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50.000, max(data_plot$Avg_profit)+75.000), 
+                  xlim = c(min(data_plot$SD)-50.000, max(data_plot$SD)+250.000)) + 
+  geom_line(data = plot_sub, alpha=0.50, size=0.75, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0"))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") + 
+  geom_line(data = plot_sub2, size=0.75, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", " ", " "))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") +
+  theme(axis.text=element_text(size=100), axis.title=element_text(size=100)) + theme_minimal(base_size = 15)
+
+
 
 #plot EV frontier for medium gin (base case and lower marginal cost of ammonia production)
 
@@ -174,6 +302,46 @@ ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M
   geom_line(data = plot_sub, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=1", "C=2, M=1", "C=3, M=1", "C=4, M=1", "C=5, M=1", "C=6, M=1 \n (Base model & \n $25 base electricity)"))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") + 
   geom_line(data = plot_sub2, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=1", "C=2, M=1", "C=3, M=1", "C=4, M=1 (Lower conversion rate)", " ", " "))) + xlab("Standard deviation of profit") + ylab("Mean annualized profit ($)") +
   theme(axis.text=element_text(size=100), axis.title=element_text(size=100)) + theme_minimal()
+
+
+
+
+data_plot <- read_excel("Summary.xlsx")
+data_plot <- data_plot[c(17:24, 57:63),]
+
+plot_sub <- data_plot[c(1:7),] #base
+plot_sub2 <- data_plot[c(1, 9:14),] #low marginal cost
+
+ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=1", "C=2, M=1", "C=3, M=1", "C=4, M=1", "C=5, M=1", "C=6, M=1", "C=7, M=1",
+                                                             " ", " ", " ", " ", " ", " ", "C=7, M=1"))) +
+  geom_point(size=2, aes(alpha = Opaque)) + geom_text(hjust=0, vjust=0, position = position_nudge(x = ifelse(data_plot$SD ==   1391.770 , -500.000, 20.000), y=-10.000), size=5, aes(alpha = Opaque)) + 
+  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50.000, max(data_plot$Avg_profit)+75.000), 
+                  xlim = c(min(data_plot$SD)-50.000, max(data_plot$SD)+250.000)) + 
+  geom_line(data = plot_sub, size=0.75, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=1", "C=2, M=1", "C=3, M=1", "C=4, M=1", "C=5, M=1", "C=6, M=1"))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") + 
+  geom_line(data = plot_sub2, size=0.75, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=1", "C=2, M=1", "C=3, M=1", "C=4, M=1", " ", " "))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") +
+  theme(axis.text=element_text(size=100), axis.title=element_text(size=100)) + theme_minimal(base_size = 15)
+
+
+
+#plot EV frontier with fixed cost for operator
+
+data_plot <- read_excel("Summary.xlsx")
+data_plot <- data_plot[c(17:24, 90:95),]
+
+plot_sub <- data_plot[c(1:7),]
+plot_sub2 <- data_plot[c(1, 9:13),]
+
+ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0", "C=7, M=0",
+                                                             "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0", "C=7, M=0"))) +
+  geom_point(size=2, aes(alpha = Opaque)) + geom_text(hjust=0, vjust=0, position = position_nudge(x = ifelse(data_plot$SD ==   1391.770 , -450.000, 20.000), y=-5.000), size=5, aes(alpha = Opaque)) + 
+  coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50.000, max(data_plot$Avg_profit)+50.000), 
+                  xlim = c(min(data_plot$SD)-50.000, max(data_plot$SD)+300.000)) + 
+  geom_line(data = plot_sub, size=0.75, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0"))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") + 
+  geom_line(data = plot_sub2, size=0.75, linetype = "dotted", aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=2, M=0", "C=3, M=0", "C=4, M=0", "C=5, M=0", "C=6, M=0"))) + xlab("Standard deviation of profit") + ylab("Mean annual profit ($ '000s)") +
+  theme(axis.text=element_text(size=75), axis.title=element_text(size=75)) + theme_minimal(base_size = 15)
+
+
+
 
 #plot EV frontier for medium gin (base case and all sensitivity analyses)
 
@@ -299,4 +467,3 @@ text(median(amm1$values), max(density(amm1$values)[[2]])-0.00425,  paste("Simula
 
 abline(v = median(amm2$ANHYD), col = "black", lwd = 3)
 text(median(amm2$ANHYD), max(density(amm2$ANHYD)[[2]]),  paste("Observed median =", 537),  pos = 4, srt = 0, cex = 1.50, col = "black")
-

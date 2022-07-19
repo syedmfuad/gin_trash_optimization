@@ -318,3 +318,4 @@ agg_table <- data.frame(Model=paste0("C=", c, ", M=", m), Ave_Profit=mean(XC_gro
                         Ave_ROIC=mean(XC_group$roic), ROIC0=nrow(subset(XC_group, roic<0)), ROIC100=nrow(subset(XC_group, roic>=0 & roic<250)), 
                         ROIC200=nrow(subset(XC_group, roic>=250 & roic<500)), ROIC300=nrow(subset(XC_group, roic>=500)))
 agg_table
+
