@@ -167,12 +167,12 @@ ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M
 #plot EV frontier with fixed cost for operator
 
 data_plot <- read_excel("Summary.xlsx")
-data_plot <- data_plot[c(1:4, 75:76),]
+data_plot <- data_plot[c(1:4, 74:76),]
 
 plot_sub <- data_plot[c(1:3),]
-plot_sub2 <- data_plot[c(1,5),]
+plot_sub2 <- data_plot[c(1,6),]
 
-ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0",
+ggplot(data = data_plot, aes(x = SD, y = Avg_profit, label=c("C=0, M=0", "C=1, M=0", "C=2, M=0", "C=3, M=0", "C=1, M=0",
                                                              "C=2, M=0", "C=3, M=0"))) +
   geom_point(size=2, aes(alpha = Opaque)) + geom_text(hjust=0, vjust=0, position = position_nudge(x = 10.000, y=-5.000), size=5, aes(alpha = Opaque)) + 
   coord_cartesian(ylim = c(min(data_plot$Avg_profit)-50.000, max(data_plot$Avg_profit)+50.000), 
