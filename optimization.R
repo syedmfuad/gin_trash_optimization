@@ -1,3 +1,5 @@
+#updated 12/11
+
 #summary: monthly optimization of gin trash to generate electricity and/or ammonia
 
 #I use the lp function from lpSolve package for optimization
@@ -14,6 +16,8 @@
 
 rm(list=ls())
 
+library(lpSolve)
+
 data <- read.csv("gin.csv")
 
 #sensitivity analysis: 
@@ -21,16 +25,19 @@ data <- read.csv("gin.csv")
 #(ii) reduce lower base to 25; 
 #(iii) reduce ammonia marginal cost to 85 (change 17.35 to 13.23); 
 #(iv) change extra_fc=75000;
+#(v) increase electricity price by 10%, price_inc=1.1 instead of 1.0
 
 n=nrow(data)
-U <- data$gin_small
+U <- data$gin_medium
 
-c=5 #electricity plant capacity
-m=2 #no. of ammonia plant
+c=7 #electricity plant capacity
+m=0 #no. of ammonia plant
 
 #only for sensitivity analysis
 eff=1
 extra_fc=0
+price_inc=1.1
+
 
 XC=matrix(NA, nrow=n, ncol=55)
 
@@ -48,7 +55,7 @@ system.time(
     
     #for december
     
-    f.obj <- c((data$dec_peak[i]-5.5), (data$dec_ubase[i]-5.5), (data$dec_lbase[i]-5.5), ((data$winter_crop[i]/11-17.35)))
+    f.obj <- c((data$dec_peak[i]*price_inc-5.5), (data$dec_ubase[i]*price_inc-5.5), (data$dec_lbase[i]*price_inc-5.5), ((data$winter_crop[i]/11-17.35)))
     f.rhs <- c(340*c*eff, U[i]*eff, 68*c*eff, 187*c*eff, 85*c*eff, 369*m*eff)
     
     results_dec <- lp("max", f.obj, f.con, f.dir, f.rhs)
@@ -64,7 +71,7 @@ system.time(
     
     #for january
     
-    f.obj <- c((data$jan_peak[i]-5.5), (data$jan_ubase[i]-5.5), (data$jan_lbase[i]-5.5), ((data$winter_crop[i]/11-17.35)))
+    f.obj <- c((data$jan_peak[i]*price_inc-5.5), (data$jan_ubase[i]*price_inc-5.5), (data$jan_lbase[i]*price_inc-5.5), ((data$winter_crop[i]/11-17.35)))
     f.rhs <- c(620*c*eff, gin*eff, 217*c*eff, 248*c*eff, 155*c*eff, 672*m*eff)
     
     results_jan <- lp("max", f.obj, f.con, f.dir, f.rhs)
@@ -80,7 +87,7 @@ system.time(
     
     #for february
     
-    f.obj <- c((data$feb_peak[i]-5.5), (data$feb_ubase[i]-5.5), (data$feb_lbase[i]-5.5), ((data$winter_crop[i]/11-17.35)))
+    f.obj <- c((data$feb_peak[i]*price_inc-5.5), (data$feb_ubase[i]*price_inc-5.5), (data$feb_lbase[i]*price_inc-5.5), ((data$winter_crop[i]/11-17.35)))
     f.rhs <- c(560*c*eff, gin*eff, 196*c*eff, 224*c*eff, 140*c*eff, 640*m*eff)
     
     results_feb <- lp("max", f.obj, f.con, f.dir, f.rhs)
@@ -97,7 +104,7 @@ system.time(
     #march divided into two parts: first part has peak electricity and second part does not
     #for march first half with peak electricity 
     
-    f.obj <- c((data$mar_peak[i]-5.5), (data$mar_ubase[i]-5.5), (data$mar_lbase[i]-5.5), ((data$summer_crop[i]/11-17.35)))
+    f.obj <- c((data$mar_peak[i]*price_inc-5.5), (data$mar_ubase[i]*price_inc-5.5), (data$mar_lbase[i]*price_inc-5.5), ((data$summer_crop[i]/11-17.35)))
     f.rhs <- c(300*c*eff, gin*eff, 60*c*eff, 165*c*eff, 75*c*eff, 325*m*eff)
     
     results_mar1 <- lp("max", f.obj, f.con, f.dir, f.rhs)
@@ -113,7 +120,7 @@ system.time(
     
     #for march second half without peak electricity
     
-    f.obj <- c((data$mar_ubase[i]-5.5), (data$mar_lbase[i]-5.5), ((data$summer_crop[i]/11-17.35)))
+    f.obj <- c((data$mar_ubase[i]*price_inc-5.5), (data$mar_lbase[i]*price_inc-5.5), ((data$summer_crop[i]/11-17.35)))
     f.rhs <- c(304*c*eff, gin*eff, 224*c*eff, 80*c*eff, 347*m*eff)
     
     results_mar2 <- lp("max", f.obj, f.con_sum, f.dir_sum, f.rhs)
@@ -129,7 +136,7 @@ system.time(
     
     #for april
     
-    f.obj <- c((data$apr_ubase[i]-5.5), (data$apr_lbase[i]-5.5), ((data$summer_crop[i]/11-17.35)))
+    f.obj <- c((data$apr_ubase[i]*price_inc-5.5), (data$apr_lbase[i]*price_inc-5.5), ((data$summer_crop[i]/11-17.35)))
     f.rhs <- c(570*c*eff, gin*eff, 420*c*eff, 150*c*eff, 672*m*eff)
     
     results_apr <- lp("max", f.obj, f.con_sum, f.dir_sum, f.rhs)
@@ -145,7 +152,7 @@ system.time(
     
     #for may
     
-    f.obj <- c((data$may_ubase[i]-5.5), (data$may_lbase[i]-5.5), ((data$summer_crop[i]/11-17.35)))
+    f.obj <- c((data$may_ubase[i]*price_inc-5.5), (data$may_lbase[i]*price_inc-5.5), ((data$summer_crop[i]/11-17.35)))
     f.rhs <- c(589*c*eff, gin*eff, 434*c*eff, 155*c*eff, 672*m*eff)
     
     results_may <- lp("max", f.obj, f.con_sum, f.dir_sum, f.rhs)
@@ -161,7 +168,7 @@ system.time(
     
     #for june
     
-    f.obj <- c((data$jun_peak[i]-5.5), (data$jun_ubase[i]-5.5), (data$jun_lbase[i]-5.5), ((data$roy_crop[i]/11-17.35)))
+    f.obj <- c((data$jun_peak[i]*price_inc-5.5), (data$jun_ubase[i]*price_inc-5.5), (data$jun_lbase[i]*price_inc-5.5), ((data$roy_crop[i]/11-17.35)))
     f.rhs <- c(600*c*eff, gin*eff, 150*c*eff, 150*c*eff, 300*c*eff, 672*m*eff)
     
     results_jun <- lp("max", f.obj, f.con, f.dir, f.rhs)
@@ -177,7 +184,7 @@ system.time(
     
     #for july
     
-    f.obj <- c((data$jul_peak[i]-5.5), (data$jul_ubase[i]-5.5), (data$jul_lbase[i]-5.5), ((data$roy_crop[i]/11-17.35)))
+    f.obj <- c((data$jul_peak[i]*price_inc-5.5), (data$jul_ubase[i]*price_inc-5.5), (data$jul_lbase[i]*price_inc-5.5), ((data$roy_crop[i]/11-17.35)))
     f.rhs <- c(620*c*eff, gin*eff, 155*c*eff, 155*c*eff, 310*c*eff, 672*m*eff)
     
     results_jul <- lp("max", f.obj, f.con, f.dir, f.rhs)
@@ -193,7 +200,7 @@ system.time(
     
     #for august
     
-    f.obj <- c((data$aug_peak[i]-5.5), (data$aug_ubase[i]-5.5), (data$aug_lbase[i]-5.5), ((data$roy_crop[i]/11-17.35)))
+    f.obj <- c((data$aug_peak[i]*price_inc-5.5), (data$aug_ubase[i]*price_inc-5.5), (data$aug_lbase[i]*price_inc-5.5), ((data$roy_crop[i]/11-17.35)))
     f.rhs <- c(610*c*eff, gin*eff, 150*c*eff, 150*c*eff, 300*c*eff, 672*m*eff)
     
     results_aug <- lp("max", f.obj, f.con, f.dir, f.rhs)
@@ -209,7 +216,7 @@ system.time(
     
     #for september
     
-    f.obj <- c((data$sep_peak[i]-5.5), (data$sep_ubase[i]-5.5), (data$sep_lbase[i]-5.5), ((data$roy_crop[i]/11-17.35)))
+    f.obj <- c((data$sep_peak[i]*price_inc-5.5), (data$sep_ubase[i]*price_inc-5.5), (data$sep_lbase[i]*price_inc-5.5), ((data$roy_crop[i]/11-17.35)))
     f.rhs <- c(300*c*eff, gin*eff, 75*c*eff, 75*c*eff, 150*c*eff, 336*m*eff)
     
     results_sep <- lp("max", f.obj, f.con, f.dir, f.rhs)
@@ -243,16 +250,16 @@ XC$V55 <- XC$V55-XC$V55
 
 XC$cost <- XC$V45+XC$V46+XC$V47+XC$V48+XC$V49+XC$V50+XC$V51+XC$V52+XC$V53+XC$V54+XC$V55
 
-price_mat <- matrix(c(c(data$dec_peak-5.5), c(data$jan_peak-5.5), c(data$feb_peak-5.5), c(data$mar_peak-5.5), c(rep(0, n)), 
-                      c(rep(0, n)), c(rep(0, n)), c(data$jun_peak-5.5), c(data$jul_peak-5.5), c(data$aug_peak-5.5), c(data$sep_peak-5.5), 
+price_mat <- matrix(c(c(data$dec_peak*price_inc-5.5), c(data$jan_peak*price_inc-5.5), c(data$feb_peak*price_inc-5.5), c(data$mar_peak*price_inc-5.5), c(rep(0, n)), 
+                      c(rep(0, n)), c(rep(0, n)), c(data$jun_peak*price_inc-5.5), c(data$jul_peak*price_inc-5.5), c(data$aug_peak*price_inc-5.5), c(data$sep_peak*price_inc-5.5), 
                       
-                      c(data$dec_ubase-5.5), c(data$jan_ubase-5.5), c(data$feb_ubase-5.5), c(data$mar_ubase-5.5), c(data$mar_ubase-5.5),
-                      c(data$apr_ubase-5.5), c(data$may_ubase-5.5), c(data$jun_ubase-5.5), c(data$jul_ubase-5.5), c(data$aug_ubase-5.5), 
-                      c(data$sep_ubase-5.5),
+                      c(data$dec_ubase*price_inc-5.5), c(data$jan_ubase*price_inc-5.5), c(data$feb_ubase*price_inc-5.5), c(data$mar_ubase*price_inc-5.5), c(data$mar_ubase*price_inc-5.5),
+                      c(data$apr_ubase*price_inc-5.5), c(data$may_ubase*price_inc-5.5), c(data$jun_ubase*price_inc-5.5), c(data$jul_ubase*price_inc-5.5), c(data$aug_ubase*price_inc-5.5), 
+                      c(data$sep_ubase*price_inc-5.5),
                       
-                      c(data$dec_lbase-5.5), c(data$jan_lbase-5.5), c(data$feb_lbase-5.5), c(data$mar_lbase-5.5), c(data$mar_lbase-5.5),
-                      c(data$apr_lbase-5.5), c(data$may_lbase-5.5), c(data$jun_lbase-5.5), c(data$jul_lbase-5.5), c(data$aug_lbase-5.5), 
-                      c(data$sep_lbase-5.5),
+                      c(data$dec_lbase*price_inc-5.5), c(data$jan_lbase*price_inc-5.5), c(data$feb_lbase*price_inc-5.5), c(data$mar_lbase*price_inc-5.5), c(data$mar_lbase*price_inc-5.5),
+                      c(data$apr_lbase*price_inc-5.5), c(data$may_lbase*price_inc-5.5), c(data$jun_lbase*price_inc-5.5), c(data$jul_lbase*price_inc-5.5), c(data$aug_lbase*price_inc-5.5), 
+                      c(data$sep_lbase*price_inc-5.5),
                       
                       c(data$winter_crop/11-17.35), c(data$winter_crop/11-17.35), c(data$winter_crop/11-17.35), c(data$summer_crop/11-17.35), 
                       c(data$summer_crop/11-17.35), c(data$summer_crop/11-17.35), c(data$summer_crop/11-17.35), c(data$roy_crop/11-17.35), 
