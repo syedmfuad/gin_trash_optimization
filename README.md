@@ -5,6 +5,7 @@ Optimizing gin trash usage
 Operations model to optimize profit for a given installed capacity
 
 $`MAX P_p E_p + P_{UB} E_{UB} + P_{LB} E_{LB} + P_M M - 5.5(E_p + E_{UB} + E_{LB} + E_M) - 130.34*M - 37645*ME - 0.100385*[640000+\frac{4000000}{1.2*C+5}]*C + 10*GW_f`$ 
+
 Where: 
 * $`P_p`$ is peak electricity price; $`E_p`$ is the MWe of electricity sold each month at peak prices;	
 * $`P_{UB}`$ is sub peak electricity price; $`E_{UB}`$ is the MWe of electricity sold each month at subpeak prices; 
@@ -15,23 +16,15 @@ Where:
 * $`GW_f`$  is gin waste sold as feed
 
 
-
-
 $`MAX P_p E_p + P_{UB} E_{UB} + P_{LB} E_{LB} + P_M \frac{E_M}{11} + 10*GW_f - 5.5(E_p + E_{UB} + E_{LB} + E_M) - 130.34*\frac{E_M}{11} - 0.100385*[640000+\frac{4000000}{1.2*C+5}]*C - 37645*ME`$ 
 
-Subject:
+Subject to:
 
-$`(E_p + E_{UB} + E_{LB} + E_M + GW_f) \leq CGW`$ 
-
-$`(E_p + E_{UB} + E_{LB} + E_M) \leq 5403*C`$ 
-
-$`0 \leq E_p \leq 1071`$ 
-
-$`0 \leq E_{UB} \leq 2432`$ 
-
-$`0 \leq E_{LB} \leq 1900`$ 
-
-$`0 \leq M \leq 550`$ 
-
-$`0 \leq E_M \leq 6050`$ 
+* $`(E_p + E_{UB} + E_{LB} + E_M + GW_f) \leq CGW`$ 
+* $`(E_p + E_{UB} + E_{LB} + E_M) \leq 5403*C`$ 
+* $`0 \leq E_p \leq 1071`$ 
+* $`0 \leq E_{UB} \leq 2432`$ 
+* $`0 \leq E_{LB} \leq 1900`$ 
+* $`0 \leq M \leq 550`$ 
+* $`0 \leq E_M \leq 6050`$ 
 
