@@ -1,8 +1,8 @@
 # gin_trash_optimization
-Optimizing gin trash usage
+This work shows that combustion of cotton gin trash into syngas using a gas turbine and a generator set can produce electricity and ammonia via electrolysis profitably. Using hourly electricity prices, monthly ammonia prices and annual gin trash data, we simulate distributions across a nine-month season and calculate annual, and cumulative profit and return on investment over a 12-year period. Our model is flexible and allows for month-to-month operational decision-making. 
 
-## columbus_2.R 
-Operations model to optimize profit for a given installed capacity
+## optimization.R 
+Code for operations model to optimize profit for a given installed capacity
 
 $`MAX P_p E_p + P_{UB} E_{UB} + P_{LB} E_{LB} + P_M M - 5.5(E_p + E_{UB} + E_{LB} + E_M) - 130.34*M - 37645*ME - 0.100385*[640000+\frac{4000000}{1.2*C+5}]*C + 10*GW_f`$ 
 
@@ -28,3 +28,11 @@ Subject to:
 * $`0 \leq M \leq 550`$ 
 * $`0 \leq E_M \leq 6050`$ 
 
+## bayesian simulation.R 
+Code for bayesian simulation of data 
+
+## plot.R
+Plotting code 
+
+## codes_extra summary figure.R 
+Summary plot code 
