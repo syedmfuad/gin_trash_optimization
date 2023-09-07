@@ -5,15 +5,19 @@ Optimizing gin trash usage
 
 $`MAX P_p E_p + P_{UB} E_{UB} + P_{LB} E_{LB} + P_M M - 5.5(E_p + E_{UB} + E_{LB} + E_M) - 130.34*M - 37645*ME - 0.100385*[640000+\frac{4000000}{1.2*C+5}]*C + 10*GW_f`$ 
 
+$`P_p`$ is peak electricity price; $`E_p`$ is the MWe of electricity sold each month at peak prices;
+	
+$`P_{UB}`$ is sub peak electricity price; $`E_{UB}`$ is the MWe of electricity sold each month at subpeak prices; 
 
+$`P_{LB}`$ is the price of base electricity; $`E_{LB}`$ is the MWe of electricity each month at base prices; 
 
-	P_p is peak electricity price; E_p is the MWe of electricity sold each month at peak prices;
-	P_UB is sub peak electricity price; E_UB is the MWe of electricity sold each month at subpeak prices; 
-	P_LB is the price of base electricity; E_LB is the MWe of electricity each month at base prices; 
-	P_M is the price of ammonia, M; E_M is electricity in MWe required to produce M (11 is needed to produce every ton of ammonia, M); 
-	ME is the number of ammonia processors, which ranges from 0 to 2;
-	C is installed power capacity, which ranges from 1-5 MWe for the small gin and 1-9 MWe for medium gins;
-	〖GW〗_f  is gin waste sold as feed
+$`P_M`$ is the price of ammonia, M; $`E_M`$ is electricity in MWe required to produce M (11 is needed to produce every ton of ammonia, M); 
+
+ME is the number of ammonia processors, which ranges from 0 to 2;
+	
+C is installed power capacity, which ranges from 1-5 MWe for the small gin and 1-9 MWe for medium gins;
+
+$`GW_f`$  is gin waste sold as feed
 
 
 
