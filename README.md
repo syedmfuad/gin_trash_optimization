@@ -11,5 +11,13 @@ $`(E_p + E_UB + E_LB + E_M +GW_f) \leq CGW`$
 
 $`(E_p + E_UB + E_LB + E_M) \leq 5403*C`$ 
 
-$`(E_p + E_UB + E_LB + E_M) \leq 5403*C`$ 
+$`0 \geq (E_p) \leq 1071`$ 
+
+$`0 \geq (E_UB) \leq 2432`$ 
+
+$`0 \geq (E_LB) \leq 1900`$ 
+
+$`0 \geq M \leq 550`$ 
+
+$`0 \geq E_M \leq 6050`$ 
 
