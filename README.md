@@ -4,7 +4,7 @@ This work shows that combustion of cotton gin trash into syngas using a gas turb
 ## optimization.R 
 Code for operations model to optimize profit for a given installed capacity
 
-$`MAX P_p E_p + P_{UB} E_{UB} + P_{LB} E_{LB} + P_M M - 5.5(E_p + E_{UB} + E_{LB} + E_M) - 130.34*M - 37645*ME - 0.100385*[640000+\frac{4000000}{1.2*C+5}]*C + 10*GW_f`$ 
+$`MAX P_p E_p + P_{UB} E_{UB} + P_{LB} E_{LB} + P_M M - 5.5(E_p + E_{UB} + E_{LB} + E_M) - 130.34*M - 37645*ME`$ $`- 0.100385*[640000+\frac{4000000}{1.2*C+5}]*C + 10*GW_f`$ 
 
 Where: 
 * $`P_p`$ is peak electricity price; $`E_p`$ is the MWe of electricity sold each month at peak prices;	
@@ -29,7 +29,7 @@ Subject to:
 * $`0 \leq E_M \leq 6050`$ 
 
 ## bayesian simulation.R 
-Code for bayesian simulation of data 
+Code for bayesian data simulation 
 
 ## plot.R
 Plotting code 
