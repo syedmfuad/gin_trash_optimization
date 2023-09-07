@@ -7,9 +7,9 @@ $`MAX P_p E_p + P_(UB) E_(UB) + P_(LB) E_(LB) + P_M \frac{E_M}{11} + 10*GW_f - 5
 
 Subject:
 
-$`(E_p + E_UB + E_LB + E_M +GW_f) \leq CGW`$ 
+$`(E_p + E_{UB} + E_{LB} + E_M + GW_f) \leq CGW`$ 
 
-$`(E_p + E_UB + E_LB + E_M) \leq 5403*C`$ 
+$`(E_p + E_{UB} + E_{LB} + E_M) \leq 5403*C`$ 
 
 $`0 \leq (E_p) \leq 1071`$ 
 
