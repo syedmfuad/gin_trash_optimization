@@ -37,6 +37,20 @@ Subject to:
 ## bayesian simulation.R 
 Code for bayesian data simulation 
 
+Specify regression model. For example, to simulate cotton gin waste (CGW) from precipitation (PPT), we may use the following model: 
+
+$`CGW = \beta_0 + \beta_1 PPT + \beta_2 PPT^2 + \Epsilon`$
+
+CGW=β_0+β_1 PPT+β_2 PPT^2+ϵ
+
+where CGW is the dependent variable, PPT and PPT^2 are the independent variables, β_0, β_1 and β_2 are the regression coefficients to be estimated, and ϵ represents the error term. 
+We then perform a Bayesian regression using Gibbs sampling to estimate the posterior distribution of the model coefficients (β) and error variance (σ^2). The idea is to iteratively draw samples from conditional distributions of both parameters. We set a specified number of iterations for the Gibbs sample (11,000) and a burn-in sample (1,000); the burn-in sample is the number of samples that are discarded before the actual Gibbs sampling algorithm begins drawing from the distribution. 
+We then enter a loop where in each iteration, β and σ^2 parameters are alternately updated. For β, a sample is drawn from a multivariate normal distribution based on the covariance matrix and mean values parameters. The mean and covariance matrix for this distribution are calculated based on the current values of the data and a σ starting value of 0.50 . The σ is subsequently updated by drawing a sample from an inverse gamma distribution, and the updated σ is used in the next iteration of drawing β; the loop continues until 10,000 samples are drawn after discarding the burn-in samples. These 10,000 samples represent different plausible values for the model's parameters based on the observed data. Finally, new values of the dependent variable are simulated using the sampled β coefficients. 
+
+
+
+
+
 ## plot.R
 Plotting code 
 
