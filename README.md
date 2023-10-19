@@ -39,7 +39,7 @@ Code for bayesian data simulation
 
 Specify regression model. For example, to simulate cotton gin waste (CGW) from precipitation (PPT), we may use the following model: 
 
-$`CGW = \beta_0 + \beta_1 PPT + \beta_2 PPT^2 + \Epsilon`$
+$`CGW = \beta_0 + \beta_1 PPT + \beta_2 PPT^2 + \epsilon`$
 
 CGW=β_0+β_1 PPT+β_2 PPT^2+ϵ
 
