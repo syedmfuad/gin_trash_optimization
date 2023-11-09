@@ -46,6 +46,8 @@ We then perform a Bayesian regression using Gibbs sampling to estimate the poste
 
 We then enter a loop where in each iteration, $`\beta`$ and $`\sigma^2`$ parameters are alternately updated. For $`\beta`$, a sample is drawn from a multivariate normal distribution based on the covariance matrix and mean values parameters. The mean and covariance matrix for this distribution are calculated based on the current values of the data and a σ starting value of 0.50 . The $`\sigma`$ is subsequently updated by drawing a sample from an inverse gamma distribution, and the updated $`\sigma`$ is used in the next iteration of drawing $`\beta`$; the loop continues until 10,000 samples are drawn after discarding the burn-in samples. These 10,000 samples represent different plausible values for the model's parameters based on the observed data. Finally, new values of the dependent variable are simulated using the sampled $`\beta`$ coefficients. 
 
+Details: Lacombe, D. J. (2022). (Bayesian Regression Tutorial)[https://github.com/djlacombe/Bayesian-Regression-Tutorial]
+
 ## plot.R
 Plotting code 
 
